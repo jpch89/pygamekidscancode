@@ -4,6 +4,7 @@ WIDTH = 480
 HEIGHT = 600
 FPS = 60
 FONT_NAME = 'youyuan'
+HS_FILE = 'highscore.txt'
 
 # define colors
 WHITE = (255, 255, 255)

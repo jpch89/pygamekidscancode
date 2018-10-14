@@ -3,6 +3,7 @@ import random
 import pygame as pg
 from settings import *
 from sprites import *
+from os import path
 
 
 class Game:
@@ -15,6 +16,16 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.load_data()
+
+    def load_data(self):
+        # load high score
+        self.dir = path.dirname(__file__)
+        with open(path.join(self.dir, HS_FILE), 'w') as f:
+            try:
+                self.highscore = int(f.read())
+            except:
+                self.highscore = 0
 
     def new(self):
         # start a new game
@@ -111,6 +122,7 @@ class Game:
         self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
         self.draw_text('方向键移动，空格键跳跃', 22, WHITE, WIDTH / 2, HEIGHT / 2)
         self.draw_text('按任意键开始游戏', 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
+        self.draw_text('最高分：' + str(self.highscore), 22, WHITE, WIDTH / 2, 15)
         pg.display.flip()
         self.wait_for_key()
 
@@ -122,6 +134,13 @@ class Game:
         self.draw_text('游戏结束', 48, WHITE, WIDTH / 2, HEIGHT / 4)
         self.draw_text('分数：' + str(self.score), 22, WHITE, WIDTH / 2, HEIGHT / 2)
         self.draw_text('按任意键重新游戏', 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
+        if self.score > self.highscore:
+            self.highscore = self.score
+            self.draw_text('最新纪录！', 22, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
+            with open(path.join(self.dir, HS_FILE), 'w') as f:
+                f.write(str(self.score))
+        else:
+            self.draw_text('最高分：' + str(self.highscore), 22, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
         pg.display.flip()
         self.wait_for_key()
 
