@@ -87,7 +87,6 @@ class Game:
         if len(self.platforms) == 0:
             self.playing = False
 
-
         # spawn new platforms to keep same average number
         while len(self.platforms) < 6:
             width = random.randint(50, 100)
@@ -100,19 +99,42 @@ class Game:
 
     def draw(self):
         # Game loop - draw
-        self.screen.fill(BLACK)
+        self.screen.fill(BGCOLOR)
         self.all_sprites.draw(self.screen)
-        self.draw_text(str(self.score), 22, WHITE, WIDTH/2, 15)
+        self.draw_text(str(self.score), 22, WHITE, WIDTH / 2, 15)
         # *after* drawing everything, flip the display
         pg.display.flip()
 
     def show_start_screen(self):
         # game splash/start screen
-        pass
+        self.screen.fill(BGCOLOR)
+        self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
+        self.draw_text('方向键移动，空格键跳跃', 22, WHITE, WIDTH / 2, HEIGHT / 2)
+        self.draw_text('按任意键开始游戏', 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
+        pg.display.flip()
+        self.wait_for_key()
 
     def show_go_screen(self):
         # game over/continue
-        pass
+        if not self.running:
+            return
+        self.screen.fill(BGCOLOR)
+        self.draw_text('游戏结束', 48, WHITE, WIDTH / 2, HEIGHT / 4)
+        self.draw_text('分数：' + str(self.score), 22, WHITE, WIDTH / 2, HEIGHT / 2)
+        self.draw_text('按任意键重新游戏', 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.running = False
+                if event.type == pg.KEYUP:
+                    waiting = False
 
     def draw_text(self, text, size, color, x, y):
         font = pg.font.Font(self.font_name, size)
